@@ -1,0 +1,377 @@
+
+<div class="container">
+
+    <!-- <article>
+        <h2>What and Why Lazy loading as a best Practice</h2>
+        <ol>
+            <li>A practice of delaying load of resources until they are needed.</li>
+            <li>Can occur at different points in the application</li>
+            <li>Achievable through various ways.</li>
+        </ol>
+    </article> -->
+<div class="lazy-com-but">
+    <div style="text-align:center;margin-top: 100px;" class="content">
+        <h1>Welcome to lazy loading a Component</h1>
+        <button mat-raised-button color="primary" (click)="showForm = true">
+          Load component form!
+        </button>
+        <app-standard-behaviour *ngIf="showForm"></app-standard-behaviour>
+      </div>
+</div>
+    <article>
+        <h2>Angular Lazy Routing</h2>
+        <ol>
+            <li>Lazy loading in angular is mean't to keep the main bundle smaller by creating smaller bundles through lazy loaded routes.</li>
+            <li>This allows users to only load the code they need when needed as they navigate to each module.</li>
+        </ol>
+
+        Typically, in Angular, all ngModules are loaded at once. If an application starts to grow larger and more complex, delaying this behaviour can help speed up the app when it loads.
+<br><br>
+
+        When starting a new project we can enable routing by adding the <pre><code>--routing</code></pre> flag when running the cli to generate the project.
+<div class="code-block">
+    <code>ng new lazy-app --routing</code>
+</div>
+
+     <div class="detailed-code-block"><pre style="margin: 0; line-height: 125%"><span class="com">/* app.module.ts */</span><br><br><span class="imp">import</span> <span class="arr">&#123;</span> <span class="key">NgModule</span> <span class="arr">}</span> <span class="imp">from</span> <span class="str">&#39;@angular/core&#39;</span><span style="color: #f8f8f2">;</span>
+<span class="imp">import</span> <span class="arr">&#123;</span> <span class="key">BrowserModule</span> <span class="arr">}</span> <span class="imp">from</span> <span class="str">&#39;@angular/platform-browser&#39;</span><span>;</span>
+
+<span class="imp">import</span> <span class="arr">&#123;</span> <span class="key">AppRoutingModule</span> <span class="arr">}</span> <span class="imp">from</span> <span class="str">&#39;./app-routing.module&#39;</span><span >;</span>
+<span class="imp">import</span> <span class="arr">&#123;</span> <span class="key">AppComponent</span> <span class="arr">}</span> <span class="imp">from</span> <span class="str">&#39;./app.component&#39;</span><span >;</span>
+
+
+<span>@</span><span class="compon">NgModule</span><span class="arr">(</span><span class="ob">&#123;</span>
+  <span class="key">declarations: [</span>
+    <span class="compon">AppComponent</span><span style="color: #f8f8f2">,</span>
+  <span class="key">]</span>,
+  <span class="key">imports: [</span>
+    <span class="compon">BrowserModule</span><span style="color: #f8f8f2">,</span>
+    <span class="compon">AppRoutingModule</span>
+  <span class="key">]</span>,
+  <span class="key">providers: []</span>,
+  <span class="key">bootstrap: [</span><span class="compon">AppComponent</span><span style="color: #f8f8f2">]</span>
+<span class="ob">}</span><span class="arr">)</span>
+<span class="imp">export</span> <span class="func">class</span> <span class="compon">AppModule</span> <span class="arr">&#123; }</span>
+</pre></div>
+   
+
+        This will generate an app and creates and imports a routing module to the root of our app.
+
+<div class="detailed-code-block"><pre style="margin: 0; line-height: 125%"><span class="com">/* app-routing.module.ts */</span><br><br><span class="imp">import</span> <span class="arr">&#123;</span> <span class="compon">NgModule</span> <span class="arr">}</span> <span class="imp">from</span> <span class="str">&#39;@angular/core&#39;</span><span style="color: #f8f8f2">;</span>
+
+    <span class="cons">const</span> <span class="func">routes</span>: <span class="compon">Routes</span> <span>=</span> <span class="arr">[];</span>
+
+    <span >@</span><span class="compon">NgModule</span><span class="arr">(</span><span class="ob">&#123;</span>
+      <span class="key">imports: [</span><span class="compon">RouterModule</span><span style="color: #f8f8f2">.</span><span class="met">forRoot</span><span class="arr">(</span><span class="func">routes</span><span class="arr">)</span><span class="key">]</span>,
+      <span class="key">exports: [</span><span class="compon">RouterModule</span><span class="key">]</span>
+    <span class="ob">}</span><span class="arr">)</span>
+    <span class="imp">export</span> <span style="color: #66d9ef">class</span> <span class="compon">AppRoutingModule</span> <span class="arr">&#123; }</span>
+    </pre></div>
+    
+
+Next to create lazy loading feature modules we can run the generate module command in the cli and add the  <pre><code>--route</code></pre> and <pre><code>--module</code></pre> flags in our command. 
+
+
+        <div class="code-block">
+            <code>
+                ng generate module your-module-name --route your-module-name --module app.module
+            </code>
+        </div>
+        <div class="code-block">
+            <code>
+                ng g m another-module-name --route another-module-name --module app.module
+            </code>
+        </div>
+
+        This command will do a few things:
+        <ul>
+            <li>The <pre><code>--route</code></pre> flag is the route path for our lazy loaded module.</li>
+            <li>Creates a folder containing a module file it's own routing module, and associated component files</li>
+            <li>Adds the route to the routes array in the module specified by using the <pre><code>--module</code></pre>flag.</li>
+        </ul>
+
+        <p>
+         In the root routing module we can see our newly created lazily loaded paths in our routes array. This is slightly different syntactilly compared to when we directly set a route to a component.
+        </p>
+        <!-- <h3>Old:</h3>
+        <div class="detailed-code-block">
+            <code>
+                <span class="com">/* app-routing.module.ts */</span><br><br>
+
+                <span class="ob">
+                    &#123;
+                </span>
+                <span class="key">
+                    path: 
+                </span> 
+                <span class="str">
+                    'another-module-name'</span>,
+          <span class="compon">component:AnotherModuleNameModule</span>
+                    <span class="ob"> &#125;
+                </span> 
+            </code>
+        </div>
+
+        <h3>New:</h3> -->
+        <div class="detailed-code-block">
+            <code>
+                <span class="com">/* app-routing.module.ts */</span><br><br>
+
+                <span class="ob">
+                    &#123;
+                </span>
+                <span class="key">
+                    path: 
+                </span> 
+                <span class="str">
+                    'another-module-name'</span>,
+                <span class="met">
+loadChildren:
+                </span> 
+                <span class="key">
+                    () 
+                </span> 
+                <span class="func">
+                     => import
+                </span> 
+                <span class="key">
+                  (</span> <span class="str">'./another-module-name/another-module-name.module'</span><span class="func">)</span>.<span class="met">then</span><span class="key">(
+                </span> 
+                <span class="key">
+                    m
+                </span> 
+                <span class="func">
+                    =>
+                </span> 
+                <span class="key">
+                    m</span>.<span class="compon">AnotherModuleName</span><span class="key">)</span>  
+                    <span class="ob"> &#125;
+                </span> 
+            </code>
+        </div>
+
+            These routes use the <pre><code>loadChildren</code></pre> property where we use a function that lets us resolve a set of routes. What is happens here is that we are fetching the module when we go to the path. Through the import syntax we get the router config from our feature module, merge into our main configuration and then it will activate all of that feature modules components.
+
+            <br><br>
+            As noted above, our feature module has it's own router config. We can also see that our feature module uses a <pre><code>forChild()</code></pre> method compared to the root routing module that uses the <pre><code>forRoot()</code></pre> method. 
+
+        <div class="detailed-code-block"><pre style="margin: 0; line-height: 125%"><span class="com">/* another-module-name-routing.module.ts */<br><br></span><span class="imp">import</span> <span class="ob">&#123;</span> <span class="compon">NgModule</span> <span class="ob">}</span> <span class="imp">from</span> <span class="str">&#39;@angular/core&#39;</span><span class="ob">;</span>
+<span class="imp">import</span> <span class="ob">&#123;</span> <span class="compon">RouterModule</span><span class="ob">,</span> <span class="compon">Routes</span> <span class="ob">}</span> <span class="imp">from</span> <span class="str">&#39;@angular/router&#39;</span><span class="ob">;</span>
+<span class="imp">import</span> <span class="ob">&#123;</span> <span class="compon">AnotherModuleNameComponent</span> <span class="ob">}</span> <span class="compon">from</span> <span class="str">&#39;./another-module-name.component&#39;</span><span style="color: #f8f8f2">;</span>
+
+<span class="cons">const</span> <span class="func">routes</span>: <span class="compon">Routes</span> <span>=</span> <span class="key">[</span><span class="ob">&#123;</span> <span class="compon">path</span><span >:</span> <span class="str">&#39;&#39;</span><span style="color: #f8f8f2">,</span> <span class="compon">component</span>: <span class="compon">AnotherModuleNameComponent</span> <span class="ob">}</span><span class="key">];</span>
+
+<span >@</span><span class="compon">NgModule</span><span class="arr">(&#123;</span>
+  <span class="key">imports:[ </span><span class="compon">RouterModule</span><span style="color: #f8f8f2">.</span><span class="met">forChild</span><span class="arr">(</span><span class="func">routes</span><span class="arr">)</span><span class="key">]</span>,
+  <span class="key">exports:[ </span><span class="compon">RouterModule</span><span class="key">]</span>
+<span class="ob">}</span><span class="arr">)</span>
+
+<span class="imp">export</span> <span class="func">class</span> <span class="compon">AnotherModuleNameRoutingModule</span> <span class="arr">&#123;</span> <span class="arr">}</span>
+</pre></div>
+
+<div class="detailed-code-block">
+    <code>
+        <span class="com">/* app-routing.module.ts */</span><br><br>
+        @<span class="compon">NgModule</span><span class="arr">(</span><span class="ob">&#123;
+        </span>
+        <br>
+        <span class="key">
+            &nbsp;imports: [</span><span class="compon">RouterModule</span><span class="met">.forRoot</span><span class="arr">(
+        </span> <br>
+        <span class="func">&nbsp;&nbsp;&nbsp;routes</span>
+            <span class="arr">&nbsp;)</span><span class="key">]</span>,<br>
+          <span class="key">&nbsp;exports: [</span><span class="compon">RouterModule</span><span class="key">]</span>
+          <br><span class="ob">&#125;</span><span class="arr">)
+        </span>
+    </code>
+</div>
+
+This is because, when routing, there can be only one router. If we didn't use <pre><code>forChild()</code></pre> in our feature modules, each feature module would try to create a new router instance which will break the application. <pre><code>forRoute()</code></pre> makes our app-routing.module our primary routing module. This helps us follow the singlton service pattern.
+
+<ul><li>
+    When we use <pre><code>forRoute()</code></pre> we are telling our app to globally instantiate a router class. It creates all of the directives, given routes and the router service for our app. 
+</li>
+<li>When we use <pre><code>forChild()</code></pre> it does the same but does not create a router service. It will register the routes in our app and use our root router.</li></ul>
+  
+
+<p>All that's left is to add navigation and a router outlet to our app and we now have lazily loaded modules</p>
+<div class="detailed-code-block"><pre style="margin: 0; line-height: 125%"><span class="com">/* app-component.html */</span><br>
+<span style="color: #9b9b9b">&lt;</span><span class="func">nav</span><span style="color: #9b9b9b">&gt;</span>
+    <span style="color: #9b9b9b">&lt;</span><span class="func">button</span> <span class="key">routerLink</span><span style="color: #9b9b9b">=</span><span class="str">&quot;/your-module-name&quot;</span><span style="color: #9b9b9b">&gt;</span><span >Link 1</span><span style="color: #9b9b9b">&lt;</span><span class="func">/button&gt;</span>
+    <span style="color: #9b9b9b">&lt;</span><span class="func">button</span> <span class="key">routerLink</span><span>=</span><span class="str">&quot;/another-module-name&quot;</span><span style="color: #9b9b9b">&gt;</span><span >Link 2</span><span style="color: #9b9b9b">&lt;</span><span class="func">/button&gt;</span>
+<span style="color: #9b9b9b">&lt;</span><span class="func">/nav&gt;</span>
+  
+<span style="color: #9b9b9b">&lt;</span><span class="func">router-outlet</span><span style="color: #9b9b9b">&gt;&lt;</span><span class="func">/router-outlet&gt;</span>
+  </pre></div>
+  <br>
+
+            <h2>
+                Preloading Modules
+            </h2>
+            <p> Lazy loading can definitely help with loading our app, but we can run into issues where we start slowing down our navigation. As an app continues to grow we will see more and more navigation slowdown. Angular has a solution for that called preload startegies. Preloading in modules can be used alongside lazy loading to help us improve our loading time. There are a few ways to do this. </p>
+            <ul>
+                <li>
+                    There are 2 built in strategies to either preload all modules <pre><code>PreloadAllModules</code></pre> or preload no modules,  <pre><code>NoPreloading</code></pre>.
+                    Both strategies use a <pre><code>preload()</code></pre> method that will return an observable to determine to preload or not preload the route.
+                </li>
+                <li>We can additionally create custom ways to preload our modules through the use of a service.</li>
+            </ul>
+
+            <h4>Basic Preload Implementation</h4>
+
+            <div class="detailed-code-block">
+                <code>
+                    <span class="com">/* app-routing.module.ts */</span><br><br>
+                    @<span class="compon">NgModule</span><span class="arr">(</span><span class="ob">&#123;
+                    </span>
+                    <br>
+                    <span class="key">
+                        &nbsp;imports: [</span><span class="compon">RouterModule</span><span class="met">.forRoot</span><span class="arr">(
+                    </span> <br>
+                    <span class="func">&nbsp;&nbsp;&nbsp;routes</span>,
+                    <br>
+                    <span class="ob">&nbsp;&nbsp;&nbsp;&#123;
+                    </span>
+                    <span class="compon">
+                        preloadingStrategy: PreloadAllModules </span>
+                        <span class="ob">&#125;</span><span class="com"> // NoPreloading will NOT load all modules in the background</span><br>
+                        <span class="arr">&nbsp;)</span><span class="key">]</span>,<br>
+                      <span class="key">&nbsp;exports: [</span><span class="compon">RouterModule</span><span class="key">]</span>
+                      <br><span class="ob">&#125;</span><span class="arr">)
+                    </span>
+                </code>
+            </div>
+            <h4>Custom Implementation</h4>
+            <p>We can customize our preload strategy by implementing a service. There are a few cases or reasons we would do this approach. From setting up preload rules based on network connection types, or user permissions, to simply allowing certain less used modules not to preload.
+                The below approach is a common example of only preloading certain routes.
+            </p>
+
+
+<p>We can modify our routes in the root routing module with a data param and add a bool to it.</p>
+            <div class="detailed-code-block">
+                <code>
+                    <span class="com">/* app-routing.module.ts */</span><br><br>
+    
+                    <span class="ob">
+                        &#123;
+                    </span>
+                    <span class="key">
+                        path: 
+                    </span> 
+                    <span class="str">
+                        'another-module-name'</span>,
+                    <span class="met">
+    loadChildren:
+                    </span> 
+                    <span class="key">
+                        () 
+                    </span> 
+                    <span class="func">
+                         => import
+                    </span> 
+                    <span class="key">
+                      (</span> <span class="str">'./another-module-name/another-module-name.module'</span><span class="func">)</span>.<span class="met">then</span><span class="key">(
+                    </span> 
+                    <span class="key">
+                        m
+                    </span> 
+                    <span class="func">
+                        =>
+                    </span> 
+                    <span class="key">
+                        m</span>.<span class="compon">AnotherModuleName</span><span class="key">)</span>,<span class="key"> data: &#123; preload:</span><span class="func"> true</span><span class="key"> &#125;
+                        </span> 
+                        <span class="ob"> &#125;
+                    </span> 
+                </code>
+            </div>
+
+
+            We can create a service and use the same preload method that the <pre><code>NoPreload</code></pre>/<pre><code>PreloadAllModules</code></pre> strategies use.  We can then evaluate the routes by using this service as our preload strategy.
+
+            <div class="code-block">
+                <code>
+                    ng g s preload-service
+                </code>
+            </div>
+
+            <div class="detailed-code-block">
+        <div><pre style="margin: 0; line-height: 125%"><span class="com">/* preload-service.service.ts */</span><br><br>    <span class="imp">import</span> <span class="ob">&#123;</span> <span class="compon">Injectable</span> <span class="ob">}</span> <span class="imp">from</span> <span class="str">&#39;@angular/core&#39;</span><span >;</span>
+    <span class="imp">import</span> <span class="ob">&#123;</span> <span class="compon">Route</span> <span class="ob">}</span> <span class="imp">from</span> <span class="str">&#39;@angular/router&#39;</span><span >;</span>
+    <span class="imp">import</span> <span class="ob">&#123;</span> <span class="compon">Observable</span><span class="ob">,</span> <span class="compon">of</span> <span class="ob">}</span> <span class="imp">from</span> <span class="str">&#39;rxjs&#39;</span><span>;</span>
+    
+    <span >@</span><span class="compon">Injectable</span><span class="arr">(</span><span class="ob">&#123;</span>
+      <span class="key">providedIn</span><span >:</span> <span class="str">&#39;root&#39;</span>
+    <span class="ob">}</span><span class="arr">)</span>
+    <span class="imp">export</span> <span class="func">class</span> <span class="compon">PreloadServiceService</span> <span class="arr">&#123;</span>
+    
+      <span class="func">constructor</span><span class="ob">()</span> <span class="ob">&#123;</span> <span class="ob">}</span>
+      <span class="met">preload</span><span class="ob">(</span><span class="key">route</span>: <span class="compon">Route</span><span>,</span> <span class="met">load</span><span >:</span> <span class="key">()</span> <span class="func">=&gt;</span> <span class="compon">Observable</span><span >&lt;</span><span class="compon">any</span><span >&gt;</span><span class="ob">)</span><span >:</span> <span class="compon">Observable</span><span >&lt;</span><span class="compon">any</span><span >&gt;</span> <span class="ob">&#123;</span>
+       
+      <span class="imp">if</span> <span class="key">(</span><span class="key">route</span><span >.</span><span class="key">data</span> <span >&amp;&amp;</span> <span class="key">route</span><span >.</span><span class="key">data</span><span >.</span><span class="key">preload</span><span class="key">)</span> <span class="key">&#123;</span>      
+          <span class="imp">return</span> <span class="met">load</span><span class="arr">();</span>
+        <span class="key">}</span> <span class="imp">else</span> <span class="key">&#123;</span>
+          <span class="imp">return</span> <span class="met">of</span><span class="arr">(</span><span class="func">null</span><span class="arr">)</span>;
+        <span class="key">}</span>
+       <span class="ob">}</span>
+    <span class="arr">}</span>
+    </pre></div>
+            </div>
+
+<p>Then add our service as our new preload strategy.</p>
+
+<div class="detailed-code-block">
+    <code>
+        <span class="com">/* app-routing.module.ts */</span><br><br>
+        @<span class="compon">NgModule</span><span class="arr">(</span><span class="ob">&#123;
+        </span>
+        <br>
+        <span class="key">
+            &nbsp;imports: [</span><span class="compon">RouterModule</span><span class="met">.forRoot</span><span class="arr">(
+        </span> <br>
+        <span class="func">&nbsp;&nbsp;&nbsp;routes</span>,
+        <br>
+        <span class="ob">&nbsp;&nbsp;&nbsp;&#123;
+        </span>
+        <span class="compon">
+            preloadingStrategy: PreloadServiceService </span>
+            <span class="ob">&#125;</span><span class="com"> // Our custom strategy</span><br>
+            <span class="arr">&nbsp;)</span><span class="key">]</span>,<br>
+          <span class="key">&nbsp;exports: [</span><span class="compon">RouterModule</span><span class="key">]</span>
+          <br><span class="ob">&#125;</span><span class="arr">)
+        </span>
+    </code>
+</div>
+<p>With this small implentation we can now have certain routes preload.</p>
+    </article>
+    
+    <h2>Bonus</h2>
+    <article>
+        <h3>Image Lazy Loading</h3>
+        <p> In the past it was common to use a plugin or an event handler to lazy load images. Now there are 2 more options we can utilize</p>
+
+        <ol>
+            <li>The browsers Intersection Observer Api</li>
+            <li>Browser Level Lazy Loading with the loading attribute</li>
+        </ol>
+
+        <h3>Loading Attribute</h3>
+        The <pre><code>loading</code></pre> attribute is a fairly recent addition to browsers that allows images, and in some browsers, iframes, to lazy load without the need for any javascript. Right now its in most major chromium browsers as well as firefox. Currently, it's not fully supported in safari and ios safari unless you turn on experimental features.
+        <br><br>
+        There are currently 3 values:
+
+        <ol>
+            <li><pre><code>auto</code></pre>: This is the default and loads in the same way as if the attr was not there.</li>
+            <li><pre><code>lazy</code></pre>: Delays loading until it's in view of the viewport</li>
+            <li><pre><code>eager</code></pre>: Loads the resource immediately, irregardless of page location.</li>
+        </ol>
+        <div class="code-block"><code>&lt;img loading="lazy" src="https://placedog.net/400/400?id=12" height="400" width="400" /></code></div>
+
+        <h3>Intersection Observer</h3>
+        The intersection Observer gives us a way to target an element and let's us observe changes with an ancestor or all the way to the documents viewport. This let's us target more than just images but all elements with a little javascript. The main difference between this and a scrolling event handler is that we no longer continuously fire events through scrolling and the browser no longer needs to calculate elements in the DOM each time. Executing only once per target.
+
+        <p>We can also use this to lazily load images</p>
+
+    </article>
+    <br>
+</div>
